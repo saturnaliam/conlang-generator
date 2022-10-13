@@ -2,10 +2,16 @@
   "name": "conlang-generator",
   "version": "1.0.0",
   "description": "A CLI to generate a base for a conlang.",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Lucia Cover",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "prompt-sync": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.8.5"
+  }
 }

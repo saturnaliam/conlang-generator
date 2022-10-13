@@ -1,2 +1,5 @@
 # Transpiled TypeScript files
 *.js
+
+# Node modules
+node_modules
