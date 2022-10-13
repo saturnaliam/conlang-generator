@@ -2,7 +2,7 @@ class Family {
     _name: string;
     _subfamilies: string[];
     
-    constructor(name: string, subfamilies = ['NONE']) {
+    constructor(name: string, subfamilies = ['none']) {
         this._name = name;
         this._subfamilies = subfamilies;
     }
@@ -12,7 +12,7 @@ class Family {
     }
 
     randomSubfamily(): string {
-        return (this._subfamilies[0] === 'NONE' ? 'No subfamily.' : this._subfamilies[Math.floor(Math.random() * this._subfamilies.length)]);
+        return (this._subfamilies[0] === 'none' ? 'No subfamily.' : this._subfamilies[Math.floor(Math.random() * this._subfamilies.length)]);
     }
 }
 
