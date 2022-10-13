@@ -16,10 +16,34 @@ class Family {
     }
 }
 
+class Language {
+    _writing: string;
+    _family: string;
+    _subfamily: string;
+
+    constructor(writing: string, family: string, subfamily: string) {
+        this._writing = writing
+        this._family = family
+        this._subfamily = subfamily 
+    } 
+
+    get writing() {
+        return (this._writing === 'none' ? false : this._writing);
+    }
+
+    get family() {
+        return (this._family === 'none' ? false : this._family);
+    }
+
+    get subfamily() {
+        return (this._subfamily === 'none' ? false : this._subfamily);
+    }
+}
+
 // Creating objects for each major language family.
 const NIGER_CONGO = new Family('Niger-Congo');
-const AUSTRONESIAN = new Family('Austronesian', ['Rukai', 'Tsouic', 'Northwest Formosan', 'Western Plains', 'Atayalic', 'East Formosan', 'Bunun', 'Paiwan', 'Malayo-Polynesian']);
-const TRANS_NEW_GUINEA = new Family('Trans-New Guinea');
+const AUSTRONESIAN = new Family('Austronesian', ['Rukai', 'Tsouic', 'Atayalic', 'East Formosan', 'Bunun', 'Paiwan', 'Malayo-Polynesian']);
+const TRANS_NEW_GUINEA = new Family('Trans-New Guinea', ['Berau Gulf', 'Sumeri', 'Irian Highlands', 'Asmat-Mombum', 'Central West New Guinea', 'Oksapmin', 'Bosavi', 'Duna-Pogaya', 'Anim', 'Abom', 'Southeast Papuan']);
 const SINO_TIBETAN = new Family('Sino-Tibetan');
 const INDO_EUROPEAN = new Family('Indo-European');
 const AUSTRALIAN = new Family('Australian');
