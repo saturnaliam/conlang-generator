@@ -1,0 +1,11 @@
+{
+  "name": "conlang-generator",
+  "version": "1.0.0",
+  "description": "A CLI to generate a base for a conlang.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Lucia Cover",
+  "license": "ISC"
+}
