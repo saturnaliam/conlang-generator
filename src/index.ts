@@ -80,7 +80,10 @@ const generateLanguage = (inflect: boolean, writing: boolean, family: number) =>
     }   
 
     let lFamily: Family;
-    let iType, wType, fType, sfType = 'none';
+    let iType = 'none';
+    let wType = 'none';
+    let fType = 'none';
+    let sfType = 'none';
 
     if (inflect) { iType = INFLECTION_TYPES[Math.floor(Math.random() * INFLECTION_TYPES.length)]; }
 
@@ -96,13 +99,31 @@ const generateLanguage = (inflect: boolean, writing: boolean, family: number) =>
     return new Language(iType, wType, fType, sfType);
 }
 
-const INPUT_INFLECTION = Prompt('Do you want to generate an inflection type? [Y/N] ')[0].toLowerCase();
-const INPUT_WRITING = Prompt('Do you want to generate an orthography type? [Y/N] ')[0].toLowerCase();
-const INPUT_FAMILY = Prompt('Do you want to generate a language family? [Y/N] ')[0].toLowerCase();
-let familyNumber = 0;
+const promptUser = () => {
+    const INPUT_INFLECTION = Prompt('Do you want to generate an inflection type? [Y/N] ')[0].toLowerCase();
+    const INPUT_WRITING = Prompt('Do you want to generate an orthography type? [Y/N] ')[0].toLowerCase();
+    const INPUT_FAMILY = Prompt('Do you want to generate a language family? [Y/N] ')[0].toLowerCase();
+    let familyNumber = 0;
 
-if (INPUT_FAMILY === 'y') {
-    familyNumber++;
-    const INPUT_SUBFAMILY = Prompt('Do you want to generate a language subfamily? [Y/N] ')[0].toLowerCase();
-    if (INPUT_SUBFAMILY === 'y') { familyNumber++; }
+    if (INPUT_FAMILY === 'y') {
+        familyNumber++;
+        const INPUT_SUBFAMILY = Prompt('Do you want to generate a language subfamily? [Y/N] ')[0].toLowerCase();
+        if (INPUT_SUBFAMILY === 'y') { familyNumber++; }
+    }
+
+    let newLang = generateLanguage(INPUT_INFLECTION === 'y', INPUT_WRITING === 'y', familyNumber);
+
+    if (typeof newLang === 'object') {
+        console.log('Language generated!');
+
+        if (newLang.inflection) { console.log(`  Inflection style: ${newLang.inflection}`); }
+        if (newLang.writing) { console.log(`  Orthography: ${newLang.writing}`); }
+        if (newLang.family) { console.log(`  Language family: ${newLang.family}`); }
+        if (newLang.subfamily) { console.log(`    Language subfamily: ${newLang.subfamily}`); }
+    }
+
+    console.log('\n');    
+    promptUser();
 }
+
+promptUser();
