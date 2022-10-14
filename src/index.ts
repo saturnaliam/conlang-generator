@@ -15,6 +15,8 @@ class Family {
         return this._name;
     }
 
+
+    // Returns a random subfamily, if there are none then returns 'No subfamily.'.
     randomSubfamily(): string {
         return (this._subfamilies[0] === 'none' ? 'No subfamily.' : this._subfamilies[Math.floor(Math.random() * this._subfamilies.length)]);
     }
@@ -144,3 +146,10 @@ const promptUser = () => {
 
 
 promptUser();
+
+
+// TODO Finish adding all subfamilies.
+// TODO Add shorthands for generating.
+// TODO Give information on families.
+// TODO Create actual commands to use.
+// BUG npm start gives errors.
