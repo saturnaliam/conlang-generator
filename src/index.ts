@@ -6,6 +6,10 @@ const Prompt = require('prompt-sync')({sigint: true});
 const INFORMATION_LINK = 'https://en.wikipedia.org/wiki/';
 
 
+// Whenever the program is first opened.
+let firstStart = true;
+
+
 class Family {
     _name: string;
     _info: string;
@@ -132,6 +136,19 @@ const userInput = (message: string): boolean => {
 }
 
 
+const printLang = lang => {
+    // Ensuring a valid response prior to showing the language.
+    if (typeof lang === 'object') {
+        console.log('Language generated!');
+
+        if (lang.inflection) { console.log(`  Inflection style: ${lang.inflection}`); }
+        if (lang.writing) { console.log(`  Orthography: ${lang.writing}`); }
+        if (lang.family) { console.log(`  Language family: ${lang.family}`); }
+        if (lang.subfamily) { console.log(`    Language subfamily: ${lang.subfamily}`); }
+    }
+}
+
+
 const promptUser = () => {
     try {
         // Gets user input.
@@ -142,29 +159,80 @@ const promptUser = () => {
 
         if (INPUT_FAMILY) { inputSubfamily = Number(userInput('Do you want to generate a language subfamily? [Y/N] ')); }
 
-        let newLang = generateLanguage(INPUT_INFLECTION, INPUT_WRITING, INPUT_FAMILY + inputSubfamily);
+        printLang(generateLanguage(INPUT_INFLECTION, INPUT_WRITING, INPUT_FAMILY + inputSubfamily));
 
-        // Ensuring a valid response prior to showing the language.
-        if (typeof newLang === 'object') {
-            console.log('Language generated!');
-
-            if (newLang.inflection) { console.log(`  Inflection style: ${newLang.inflection}`); }
-            if (newLang.writing) { console.log(`  Orthography: ${newLang.writing}`); }
-            if (newLang.family) { console.log(`  Language family: ${newLang.family}`); }
-            if (newLang.subfamily) { console.log(`    Language subfamily: ${newLang.subfamily}`); }
-        }
-
-        console.log();
-        promptUser();
+        menuStart();
     } catch (err) {
         console.error('Please input a value.\n');
-        promptUser();
+        menuStart();
     }
 }
 
 
-promptUser();
+const menuStart = () => {
+    /* Commands:
+        - gen {flags} (Generates a language according to the given flags. Without flags, goes into the prompts for languages.)
+        - exit (Exits program.)
+        - help (Shows list of commands.)
+    */
+
+    firstStart ? console.log('=== Welcome to Lucia\'s Conlang Generator! ===') : console.log();
+    firstStart = false;
+
+    try {
+        const INPUT = Prompt('> ').toLowerCase();
+
+        if ((INPUT.trim().split(/\s+/)[0]) === 'gen' && INPUT.length > 3) {
+            const splitGen = INPUT.trim().split(/\s+/);
+            
+            let inflect = false;
+            let write = false;
+            let family = 0;
+
+            for (const flag of splitGen) {
+                if (flag === 'gen') { continue; }
+
+                switch (flag) {
+                    case '-i':
+                        inflect = true;
+                        break;
+                    case '-w':
+                        write = true;
+                        break;
+                    case '-f':
+                        family = 1;
+                        break;
+                    case '-sf':
+                        family = 2;
+                        break;
+                    default:
+                        throw Error(`Error: Unknown flag '${flag}'.`);
+                        break;
+                }                
+            }
+
+            printLang(generateLanguage(inflect, write, family));
+            menuStart();
+        }
+
+        switch (INPUT) {
+            case 'gen':
+                promptUser();
+                break;
+
+            default:
+                throw Error('Error: Unknown command!');
+                break;
+        }
+
+        menuStart();
+    } catch (err) {
+        console.error(err.message);
+        menuStart();
+    }
+}
 
 
-// TODO Add shorthands for generating.
-// TODO Create actual commands to use.
+menuStart();
+
+// TODO Direct commands
