@@ -80,11 +80,14 @@ const generateLanguage = (inflect: boolean, writing: boolean, family: number) =>
     }   
 
     let lFamily: Family;
+
+    // Initializing each variable with 'none' to work with getters in the Family class.
     let iType = 'none';
     let wType = 'none';
     let fType = 'none';
     let sfType = 'none';
 
+    // Setting variables for the Family class based off user input.
     if (inflect) { iType = INFLECTION_TYPES[Math.floor(Math.random() * INFLECTION_TYPES.length)]; }
 
     if (writing) { wType = ORTHOGRAPHY_TYPES[Math.floor(Math.random() * ORTHOGRAPHY_TYPES.length)]; }
@@ -114,6 +117,7 @@ const promptUser = () => {
 
     let newLang = generateLanguage(INPUT_INFLECTION, INPUT_WRITING, INPUT_FAMILY + inputSubfamily);
 
+    // Ensuring a valid response prior to showing the language.
     if (typeof newLang === 'object') {
         console.log('Language generated!');
 

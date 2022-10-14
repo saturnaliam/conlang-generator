@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc;node build/index.js"
   },
-  "author": "Lucia Cover",
+  "author": "Lucia",
   "license": "ISC",
   "dependencies": {
     "prompt-sync": "^4.2.0"
