@@ -1,6 +1,7 @@
 // Importing prompt-sync for user input.
 const Prompt = require('prompt-sync')({sigint: true});
 
+
 class Family {
     _name: string;
     _subfamilies: string[];
@@ -19,6 +20,7 @@ class Family {
     }
 }
 
+
 class Language {
     _inflection: string;
     _writing: string;
@@ -32,6 +34,8 @@ class Language {
         this._subfamily = subfamily 
     } 
 
+
+    // Getters for variables, returning false if there is none.
     get inflection() {
         return (this._inflection === 'none' ? false : this._inflection);
     }
@@ -49,12 +53,13 @@ class Language {
     }
 }
 
+
 // Creating objects for each major language family.
 const NIGER_CONGO = new Family('Niger-Congo');
 const AUSTRONESIAN = new Family('Austronesian', ['Rukai', 'Tsouic', 'Atayalic', 'East Formosan', 'Bunun', 'Paiwan', 'Malayo-Polynesian']);
 const TRANS_NEW_GUINEA = new Family('Trans-New Guinea', ['Berau Gulf', 'Sumeri', 'Irian Highlands', 'Asmat-Mombum', 'Central West New Guinea', 'Oksapmin', 'Bosavi', 'Duna-Pogaya', 'Anim', 'Abom', 'Southeast Papuan']);
 const SINO_TIBETAN = new Family('Sino-Tibetan', ['Sinitic', 'Lolo-Burmese', 'Tibetic', 'Karenic', 'Bodo-Garo', 'Kuki-Chin', 'Meitei', 'Tamangic', 'Bai', 'Jingpho-Luish']);
-const INDO_EUROPEAN = new Family('Indo-European');
+const INDO_EUROPEAN = new Family('Indo-European', ['Albanian', 'Anatolian', 'Armenian', 'Balto-Slavic', 'Celtic', 'Dacian', 'Germanic', 'Greek', 'Illyrian', 'Indo-Iranian', 'Italic', 'Luburnian', 'Lusitanian', 'Messapic', 'Phrygian', 'Thracian', 'Tocharian']);
 const AUSTRALIAN = new Family('Australian');
 const AFRO_ASIATIC = new Family('Afro-Asiatic');
 const NILO_SAHARAN = new Family('Nilo-Saharan');
@@ -63,10 +68,14 @@ const TAI_KADAI = new Family('Tai-Kadai');
 const DRAVIDIAN = new Family('Dravidian');
 const TUPIAN = new Family('Tupian');
 
+
+// Creating arrays for each of the options.
 const INFLECTION_TYPES = ['Oligosynthetic', 'Polysynthetic', 'Fusional', 'Agglutinative', 'Analytical'];
 const ORTHOGRAPHY_TYPES = ['Abugida', 'Abjad', 'Alphabet', 'Logosyllabary', 'Syllabary', 'Featural System'];
 const FAMILY_TYPES = [NIGER_CONGO, AUSTRONESIAN, TRANS_NEW_GUINEA, SINO_TIBETAN, INDO_EUROPEAN, AUSTRALIAN, AFRO_ASIATIC, NILO_SAHARAN, OTO_MANGUEAN, TAI_KADAI, DRAVIDIAN, TUPIAN];
 
+
+// Generating the language.
 const generateLanguage = (inflect: boolean, writing: boolean, family: number) => {
     // Gives an error if the family value is invalid, or if no language would be generated.
     if (family < 0 || family > 2) {
@@ -102,9 +111,11 @@ const generateLanguage = (inflect: boolean, writing: boolean, family: number) =>
     return new Language(iType, wType, fType, sfType);
 }
 
+
 const userInput = (message: string): boolean => {
     return (Prompt(message)[0].toLowerCase() === 'y');
 }
+
 
 const promptUser = () => {
     // Gets user input.
@@ -130,5 +141,6 @@ const promptUser = () => {
     console.log();
     promptUser();
 }
+
 
 promptUser();
