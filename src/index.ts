@@ -2,13 +2,25 @@
 const Prompt = require('prompt-sync')({sigint: true});
 
 
+// Wikipedia link
+const INFORMATION_LINK = 'https://en.wikipedia.org/wiki/';
+
+
 class Family {
     _name: string;
+    _info: string;
     _subfamilies: string[];
     
-    constructor(name: string, subfamilies = ['none']) {
+
+    constructor(name: string, info: string, subfamilies = ['none']) {
         this._name = name;
+        this._info = info;
         this._subfamilies = subfamilies;
+    }
+
+
+    get info() {
+        return INFORMATION_LINK + this._info;
     }
 
     get name() {
@@ -28,6 +40,7 @@ class Language {
     _writing: string;
     _family: string;
     _subfamily: string;
+
 
     constructor(inflection: string, writing: string, family: string, subfamily: string) {
         this._inflection = inflection;
@@ -57,18 +70,18 @@ class Language {
 
 
 // Creating objects for each major language family.
-const NIGER_CONGO = new Family('Niger-Congo');
-const AUSTRONESIAN = new Family('Austronesian', ['Rukai', 'Tsouic', 'Atayalic', 'East Formosan', 'Bunun', 'Paiwan', 'Malayo-Polynesian']);
-const TRANS_NEW_GUINEA = new Family('Trans-New Guinea', ['Berau Gulf', 'Sumeri', 'Irian Highlands', 'Asmat-Mombum', 'Central West New Guinea', 'Oksapmin', 'Bosavi', 'Duna-Pogaya', 'Anim', 'Abom', 'Southeast Papuan']);
-const SINO_TIBETAN = new Family('Sino-Tibetan', ['Sinitic', 'Lolo-Burmese', 'Tibetic', 'Karenic', 'Bodo-Garo', 'Kuki-Chin', 'Meitei', 'Tamangic', 'Bai', 'Jingpho-Luish']);
-const INDO_EUROPEAN = new Family('Indo-European', ['Albanian', 'Anatolian', 'Armenian', 'Balto-Slavic', 'Celtic', 'Dacian', 'Germanic', 'Greek', 'Illyrian', 'Indo-Iranian', 'Italic', 'Luburnian', 'Lusitanian', 'Messapic', 'Phrygian', 'Thracian', 'Tocharian']);
-const AUSTRALIAN = new Family('Australian');
-const AFRO_ASIATIC = new Family('Afro-Asiatic', ['Berber', 'Chadic', 'Cushitic', 'Egyptian', 'Semitic', 'Omotic']);
-const NILO_SAHARAN = new Family('Nilo-Saharan', ['Berta', 'B\'aga', 'Fur', 'Kadu', 'Koman', 'Kuliak', 'Kunama', 'Maban', 'Saharan', 'Songhay', 'Central Sudanic', 'Eastern Sudanic', 'Mimi-D']);
-const OTO_MANGUEAN = new Family('Oto-Manguean', ['Oto-Pamean', 'Chinantecan', 'Tlapanecan', 'Manguean', 'Popolocan', 'Zapotecan', 'Amuzgo', 'Mixtecan']);
-const TAI_KADAI = new Family('Tai-Kadai', ['Kra', 'Kam-Sui', 'Lakkia', 'Biao', 'Be', 'Tai', 'Hiai']);
-const DRAVIDIAN = new Family('Dravidian', ['Northern', 'Central', 'South-Central', 'Central']);
-const TUPIAN = new Family('Tupian', ['Tupi-Guarani', 'Arikem', 'Aweti', 'Mawé', 'Monde', 'Mundurukú', 'Puruborá-Ramarama', 'Tuparí', 'Yuruna']);
+const NIGER_CONGO = new Family('Niger-Congo', 'Niger–Congo_languages');
+const AUSTRONESIAN = new Family('Austronesian', 'Austronesian_languages', ['Rukai', 'Tsouic', 'Atayalic', 'East Formosan', 'Bunun', 'Paiwan', 'Malayo-Polynesian']);
+const TRANS_NEW_GUINEA = new Family('Trans-New Guinea', 'Trans–New_Guinea_languages', ['Berau Gulf', 'Sumeri', 'Irian Highlands', 'Asmat-Mombum', 'Central West New Guinea', 'Oksapmin', 'Bosavi', 'Duna-Pogaya', 'Anim', 'Abom', 'Southeast Papuan']);
+const SINO_TIBETAN = new Family('Sino-Tibetan', 'Sino-Tibetan_languages', ['Sinitic', 'Lolo-Burmese', 'Tibetic', 'Karenic', 'Bodo-Garo', 'Kuki-Chin', 'Meitei', 'Tamangic', 'Bai', 'Jingpho-Luish']);
+const INDO_EUROPEAN = new Family('Indo-European', 'Indo-European_languages', ['Albanian', 'Anatolian', 'Armenian', 'Balto-Slavic', 'Celtic', 'Dacian', 'Germanic', 'Greek', 'Illyrian', 'Indo-Iranian', 'Italic', 'Luburnian', 'Lusitanian', 'Messapic', 'Phrygian', 'Thracian', 'Tocharian']);
+const AUSTRALIAN = new Family('Australian', 'Australian_Aboriginal_languages');
+const AFRO_ASIATIC = new Family('Afro-Asiatic', 'Afroasiatic_languages', ['Berber', 'Chadic', 'Cushitic', 'Egyptian', 'Semitic', 'Omotic']);
+const NILO_SAHARAN = new Family('Nilo-Saharan', 'Nilo-Saharan_languages', ['Berta', 'B\'aga', 'Fur', 'Kadu', 'Koman', 'Kuliak', 'Kunama', 'Maban', 'Saharan', 'Songhay', 'Central Sudanic', 'Eastern Sudanic', 'Mimi-D']);
+const OTO_MANGUEAN = new Family('Oto-Manguean', 'Oto-Manguean_languages', ['Oto-Pamean', 'Chinantecan', 'Tlapanecan', 'Manguean', 'Popolocan', 'Zapotecan', 'Amuzgo', 'Mixtecan']);
+const TAI_KADAI = new Family('Tai-Kadai', 'Kra–Dai_languages', ['Kra', 'Kam-Sui', 'Lakkia', 'Biao', 'Be', 'Tai', 'Hiai']);
+const DRAVIDIAN = new Family('Dravidian', 'Dravidian_languages', ['Northern', 'Central', 'South-Central', 'Central']);
+const TUPIAN = new Family('Tupian', 'Tupian_languages', ['Tupi-Guarani', 'Arikem', 'Aweti', 'Mawé', 'Monde', 'Mundurukú', 'Puruborá-Ramarama', 'Tuparí', 'Yuruna']);
 
 
 // Creating arrays for each of the options.
@@ -120,28 +133,33 @@ const userInput = (message: string): boolean => {
 
 
 const promptUser = () => {
-    // Gets user input.
-    let inputSubfamily = 0;
-    const INPUT_INFLECTION = userInput('Do you want to generate an inflection type? [Y/N] ');
-    const INPUT_WRITING = userInput('Do you want to generate an orthography type? [Y/N] ');
-    const INPUT_FAMILY = Number(userInput('Do you want to generate a language family? [Y/N] '));
+    try {
+        // Gets user input.
+        let inputSubfamily = 0;
+        const INPUT_INFLECTION = userInput('Do you want to generate an inflection type? [Y/N] ');
+        const INPUT_WRITING = userInput('Do you want to generate an orthography type? [Y/N] ');
+        const INPUT_FAMILY = Number(userInput('Do you want to generate a language family? [Y/N] '));
 
-    if (INPUT_FAMILY) { inputSubfamily = Number(userInput('Do you want to generate a language subfamily? [Y/N] ')); }
+        if (INPUT_FAMILY) { inputSubfamily = Number(userInput('Do you want to generate a language subfamily? [Y/N] ')); }
 
-    let newLang = generateLanguage(INPUT_INFLECTION, INPUT_WRITING, INPUT_FAMILY + inputSubfamily);
+        let newLang = generateLanguage(INPUT_INFLECTION, INPUT_WRITING, INPUT_FAMILY + inputSubfamily);
 
-    // Ensuring a valid response prior to showing the language.
-    if (typeof newLang === 'object') {
-        console.log('Language generated!');
+        // Ensuring a valid response prior to showing the language.
+        if (typeof newLang === 'object') {
+            console.log('Language generated!');
 
-        if (newLang.inflection) { console.log(`  Inflection style: ${newLang.inflection}`); }
-        if (newLang.writing) { console.log(`  Orthography: ${newLang.writing}`); }
-        if (newLang.family) { console.log(`  Language family: ${newLang.family}`); }
-        if (newLang.subfamily) { console.log(`    Language subfamily: ${newLang.subfamily}`); }
+            if (newLang.inflection) { console.log(`  Inflection style: ${newLang.inflection}`); }
+            if (newLang.writing) { console.log(`  Orthography: ${newLang.writing}`); }
+            if (newLang.family) { console.log(`  Language family: ${newLang.family}`); }
+            if (newLang.subfamily) { console.log(`    Language subfamily: ${newLang.subfamily}`); }
+        }
+
+        console.log();
+        promptUser();
+    } catch (err) {
+        console.error('Please input a value.\n');
+        promptUser();
     }
-
-    console.log();
-    promptUser();
 }
 
 
@@ -149,5 +167,4 @@ promptUser();
 
 
 // TODO Add shorthands for generating.
-// TODO Give information on families.
 // TODO Create actual commands to use.
