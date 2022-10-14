@@ -63,12 +63,12 @@ const TRANS_NEW_GUINEA = new Family('Trans-New Guinea', ['Berau Gulf', 'Sumeri',
 const SINO_TIBETAN = new Family('Sino-Tibetan', ['Sinitic', 'Lolo-Burmese', 'Tibetic', 'Karenic', 'Bodo-Garo', 'Kuki-Chin', 'Meitei', 'Tamangic', 'Bai', 'Jingpho-Luish']);
 const INDO_EUROPEAN = new Family('Indo-European', ['Albanian', 'Anatolian', 'Armenian', 'Balto-Slavic', 'Celtic', 'Dacian', 'Germanic', 'Greek', 'Illyrian', 'Indo-Iranian', 'Italic', 'Luburnian', 'Lusitanian', 'Messapic', 'Phrygian', 'Thracian', 'Tocharian']);
 const AUSTRALIAN = new Family('Australian');
-const AFRO_ASIATIC = new Family('Afro-Asiatic');
-const NILO_SAHARAN = new Family('Nilo-Saharan');
-const OTO_MANGUEAN = new Family('Oto-Manguean');
-const TAI_KADAI = new Family('Tai-Kadai');
-const DRAVIDIAN = new Family('Dravidian');
-const TUPIAN = new Family('Tupian');
+const AFRO_ASIATIC = new Family('Afro-Asiatic', ['Berber', 'Chadic', 'Cushitic', 'Egyptian', 'Semitic', 'Omotic']);
+const NILO_SAHARAN = new Family('Nilo-Saharan', ['Berta', 'B\'aga', 'Fur', 'Kadu', 'Koman', 'Kuliak', 'Kunama', 'Maban', 'Saharan', 'Songhay', 'Central Sudanic', 'Eastern Sudanic', 'Mimi-D']);
+const OTO_MANGUEAN = new Family('Oto-Manguean', ['Oto-Pamean', 'Chinantecan', 'Tlapanecan', 'Manguean', 'Popolocan', 'Zapotecan', 'Amuzgo', 'Mixtecan']);
+const TAI_KADAI = new Family('Tai-Kadai', ['Kra', 'Kam-Sui', 'Lakkia', 'Biao', 'Be', 'Tai', 'Hiai']);
+const DRAVIDIAN = new Family('Dravidian', ['Northern', 'Central', 'South-Central', 'Central']);
+const TUPIAN = new Family('Tupian', ['Tupi-Guarani', 'Arikem', 'Aweti', 'Mawé', 'Monde', 'Mundurukú', 'Puruborá-Ramarama', 'Tuparí', 'Yuruna']);
 
 
 // Creating arrays for each of the options.
@@ -148,8 +148,6 @@ const promptUser = () => {
 promptUser();
 
 
-// TODO Finish adding all subfamilies.
 // TODO Add shorthands for generating.
 // TODO Give information on families.
 // TODO Create actual commands to use.
-// BUG npm start gives errors.
