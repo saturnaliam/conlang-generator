@@ -1,2 +1,5 @@
+# Transpiled files
+build/*.js
+
 # Node modules
 node_modules
