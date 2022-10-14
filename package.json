@@ -4,7 +4,8 @@
   "description": "A CLI to generate a base for a conlang.",
   "main": "build/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc;node build/index.js"
   },
   "author": "Lucia Cover",
   "license": "ISC",
