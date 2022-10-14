@@ -99,13 +99,18 @@ const generateLanguage = (inflect: boolean, writing: boolean, family: number) =>
     return new Language(iType, wType, fType, sfType);
 }
 
-const promptUser = () => {
-    let inputSubfamily: number;
-    const INPUT_INFLECTION = Prompt('Do you want to generate an inflection type? [Y/N] ')[0].toLowerCase() === 'y';
-    const INPUT_WRITING = Prompt('Do you want to generate an orthography type? [Y/N] ')[0].toLowerCase() === 'y';
-    const INPUT_FAMILY = Number(Prompt('Do you want to generate a language family? [Y/N] ')[0].toLowerCase() === 'y');
+const userInput = (message: string): boolean => {
+    return (Prompt(message)[0].toLowerCase() === 'y');
+}
 
-    if (INPUT_FAMILY) { inputSubfamily = Number(Prompt('Do you want to generate a language subfamily? [Y/N] ')[0].toLowerCase() === 'y'); }
+const promptUser = () => {
+    // Gets user input.
+    let inputSubfamily = 0;
+    const INPUT_INFLECTION = userInput('Do you want to generate an inflection type? [Y/N] ');
+    const INPUT_WRITING = userInput('Do you want to generate an orthography type? [Y/N] ');
+    const INPUT_FAMILY = Number(userInput('Do you want to generate a language family? [Y/N] '));
+
+    if (INPUT_FAMILY) { inputSubfamily = Number(userInput('Do you want to generate a language subfamily? [Y/N] ')); }
 
     let newLang = generateLanguage(INPUT_INFLECTION, INPUT_WRITING, INPUT_FAMILY + inputSubfamily);
 
@@ -116,9 +121,9 @@ const promptUser = () => {
         if (newLang.writing) { console.log(`  Orthography: ${newLang.writing}`); }
         if (newLang.family) { console.log(`  Language family: ${newLang.family}`); }
         if (newLang.subfamily) { console.log(`    Language subfamily: ${newLang.subfamily}`); }
-        console.log();
     }
 
+    console.log();
     promptUser();
 }
 
