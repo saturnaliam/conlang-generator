@@ -10,7 +10,8 @@
   "author": "Lucia",
   "license": "ISC",
   "dependencies": {
-    "prompt-sync": "^4.2.0"
+    "prompt-sync": "^4.2.0",
+    "yargs": "^17.6.0"
   },
   "devDependencies": {
     "@types/node": "^18.8.5"

@@ -1,7 +1,6 @@
 // Importing prompt-sync for user input.
 const Prompt = require('prompt-sync')({sigint: true});
 
-
 // Wikipedia link
 const INFORMATION_LINK = 'https://en.wikipedia.org/wiki/';
 
@@ -160,12 +159,40 @@ const promptUser = () => {
         if (INPUT_FAMILY) { inputSubfamily = Number(userInput('Do you want to generate a language subfamily? [Y/N] ')); }
 
         printLang(generateLanguage(INPUT_INFLECTION, INPUT_WRITING, INPUT_FAMILY + inputSubfamily));
-
-        menuStart();
     } catch (err) {
-        console.error('Please input a value.\n');
-        menuStart();
+        return;
     }
+}
+
+
+const fastGen = input => {
+    let inflect = false;
+    let write = false;
+    let family = 0;
+
+    for (const flag of input) {
+        if (flag === 'gen') { continue; }
+
+        switch (flag) {
+            case '-i':
+                inflect = true;
+                break;
+            case '-w':
+                write = true;
+                break;
+            case '-f':
+                family = 1;
+                break;
+            case '-s':
+                family = 2;
+                break;
+            default:
+                throw Error(`Error: Unknown flag '${flag}'.`);
+                break;
+        }                
+    }
+
+    printLang(generateLanguage(inflect, write, family));
 }
 
 
@@ -183,35 +210,8 @@ const menuStart = () => {
         const INPUT = Prompt('> ').toLowerCase();
 
         if ((INPUT.trim().split(/\s+/)[0]) === 'gen' && INPUT.length > 3) {
-            const splitGen = INPUT.trim().split(/\s+/);
-            
-            let inflect = false;
-            let write = false;
-            let family = 0;
+            fastGen(INPUT.trim().split(/\s+/));
 
-            for (const flag of splitGen) {
-                if (flag === 'gen') { continue; }
-
-                switch (flag) {
-                    case '-i':
-                        inflect = true;
-                        break;
-                    case '-w':
-                        write = true;
-                        break;
-                    case '-f':
-                        family = 1;
-                        break;
-                    case '-sf':
-                        family = 2;
-                        break;
-                    default:
-                        throw Error(`Error: Unknown flag '${flag}'.`);
-                        break;
-                }                
-            }
-
-            printLang(generateLanguage(inflect, write, family));
             menuStart();
         }
 
@@ -233,6 +233,33 @@ const menuStart = () => {
 }
 
 
-menuStart();
+// Direct commands
+const argv = require('yargs')
+    .usage('$0 <command> [options]')
+    .command('gen [flags]', 'Generates a language.', function (yargs) {
+        // All the flags you can use for fast generation
+        yargs.options('i', { 'alias': 'inflection', 'description': 'Generates a type of inflectional morphology.' })
+        yargs.option('w', { 'alias': 'writing', 'description': 'Generates a writing system.' })
+        yargs.option('f', { 'alias': 'family', 'description': 'Generates a major family.' })
+        yargs.option('s', { 'alias': 'subfamily', 'description': 'Generates a subfamily.' })
+    }, function (argv) {
+        // If no flags are set, go through the prompts.
+        if (!argv.f && !argv.s && !argv.w && !argv.i) {
+            promptUser();
+            process.exit();
+        }
 
-// TODO Direct commands
+        // Initializes an array for fast generation, and if any flags are set then push to the array, then generate.
+        let fArr = [];
+        if (argv.f) { fArr.push('-f') }
+        if (argv.s) { fArr.push('-s') }
+        if (argv.w) { fArr.push('-w') }
+        if (argv.i) { fArr.push('-i') }
+        fastGen(fArr);
+        process.exit();
+    })
+    .help()
+    .argv
+
+
+menuStart();
