@@ -72,6 +72,31 @@ class Language {
 }
 
 
+class Command {
+    _name: string;
+    _description: string;
+    _flags: Command[];
+
+    constructor(name: string, description: string, flags?: Command[]) {
+        this._name = name;
+        this._description = description;
+        this._flags = flags;
+    }
+
+
+    get flags() {
+        return (!this._flags ? false : this._flags)
+    }
+
+    get name() {
+        return this._name;
+    }
+
+    get description() {
+        return this._description;
+    }
+}
+
 // Creating objects for each major language family.
 const NIGER_CONGO = new Family('Niger-Congo', 'Niger–Congo_languages');
 const AUSTRONESIAN = new Family('Austronesian', 'Austronesian_languages', ['Rukai', 'Tsouic', 'Atayalic', 'East Formosan', 'Bunun', 'Paiwan', 'Malayo-Polynesian']);
@@ -92,6 +117,13 @@ const INFLECTION_TYPES = ['Oligosynthetic', 'Polysynthetic', 'Fusional', 'Agglut
 const ORTHOGRAPHY_TYPES = ['Abugida', 'Abjad', 'Alphabet', 'Logosyllabary', 'Syllabary', 'Featural System'];
 const FAMILY_TYPES = [NIGER_CONGO, AUSTRONESIAN, TRANS_NEW_GUINEA, SINO_TIBETAN, INDO_EUROPEAN, AUSTRALIAN, AFRO_ASIATIC, NILO_SAHARAN, OTO_MANGUEAN, TAI_KADAI, DRAVIDIAN, TUPIAN];
 
+
+// Commands for the REPL
+const GEN = new Command('gen [flags]', 'Generates a new language.', [new Command('-i', 'Generates inflection.'), new Command('-w', 'Generates orthography.'), new Command('-f', 'Generates a family.'), new Command('-s', 'Generates a subfamily.')]);
+const HELP = new Command('help', 'Gives list of each command.');
+const INFO = new Command('info <language>', 'Gives a Wikipedia link for the language given.\n  - Sino-Tibetan, Indo-European, Australian, Afro-Asiatic, Nilo-Saharan, Tai-Kadai, Dravidian, Tupian');
+const EXIT = new Command('exit', 'Exits the application.');
+const commands = [GEN, HELP, INFO, EXIT];
 
 // Generating the language.
 const generateLanguage = (inflect: boolean, writing: boolean, family: number) => {
@@ -115,16 +147,16 @@ const generateLanguage = (inflect: boolean, writing: boolean, family: number) =>
     let sfType = 'none';
 
     // Setting variables for the Family class based off user input.
-    if (inflect) { iType = INFLECTION_TYPES[Math.floor(Math.random() * INFLECTION_TYPES.length)]; }
+    if (inflect) iType = INFLECTION_TYPES[Math.floor(Math.random() * INFLECTION_TYPES.length)];
 
-    if (writing) { wType = ORTHOGRAPHY_TYPES[Math.floor(Math.random() * ORTHOGRAPHY_TYPES.length)]; }
+    if (writing) wType = ORTHOGRAPHY_TYPES[Math.floor(Math.random() * ORTHOGRAPHY_TYPES.length)];
 
     if (family >= 1) { 
         lFamily = FAMILY_TYPES[Math.floor(Math.random() * FAMILY_TYPES.length)]; 
         fType = lFamily.name;
     }
 
-    if (family === 2) { sfType = lFamily.randomSubfamily(); }
+    if (family === 2) sfType = lFamily.randomSubfamily();
 
     return new Language(iType, wType, fType, sfType);
 }
@@ -140,10 +172,10 @@ const printLang = lang => {
     if (typeof lang === 'object') {
         console.log('Language generated!');
 
-        if (lang.inflection) { console.log(`  Inflection style: ${lang.inflection}`); }
-        if (lang.writing) { console.log(`  Orthography: ${lang.writing}`); }
-        if (lang.family) { console.log(`  Language family: ${lang.family}`); }
-        if (lang.subfamily) { console.log(`    Language subfamily: ${lang.subfamily}`); }
+        if (lang.inflection) console.log(`  Inflection style: ${lang.inflection}`);
+        if (lang.writing) console.log(`  Orthography: ${lang.writing}`);
+        if (lang.family) console.log(`  Language family: ${lang.family}`);
+        if (lang.subfamily) console.log(`    Language subfamily: ${lang.subfamily}`);
     }
 }
 
@@ -156,7 +188,7 @@ const promptUser = () => {
         const INPUT_WRITING = userInput('Do you want to generate an orthography type? [Y/N] ');
         const INPUT_FAMILY = Number(userInput('Do you want to generate a language family? [Y/N] '));
 
-        if (INPUT_FAMILY) { inputSubfamily = Number(userInput('Do you want to generate a language subfamily? [Y/N] ')); }
+        if (INPUT_FAMILY) inputSubfamily = Number(userInput('Do you want to generate a language subfamily? [Y/N] '));
 
         printLang(generateLanguage(INPUT_INFLECTION, INPUT_WRITING, INPUT_FAMILY + inputSubfamily));
     } catch (err) {
@@ -171,7 +203,7 @@ const fastGen = input => {
     let family = 0;
 
     for (const flag of input) {
-        if (flag === 'gen') { continue; }
+        if (flag === 'gen') continue;
 
         switch (flag) {
             case '-i':
@@ -188,7 +220,6 @@ const fastGen = input => {
                 break;
             default:
                 throw Error(`Error: Unknown flag '${flag}'.`);
-                break;
         }                
     }
 
@@ -196,33 +227,57 @@ const fastGen = input => {
 }
 
 
-const menuStart = () => {
-    /* Commands:
-        - gen {flags} (Generates a language according to the given flags. Without flags, goes into the prompts for languages.)
-        - exit (Exits program.)
-        - help (Shows list of commands.)
-    */
+const giveHelp = () => {
+    for(const command of commands) {
+        console.log(`\n${command.name}\n  - ${command.description}`);
+        
+        if (!command.flags) continue;
+        console.log('  Flags:');
+        for(const flag of command.flags) {
+            console.log('    ' + flag.name);
+        }
+    }
+}
 
-    firstStart ? console.log('=== Welcome to Lucia\'s Conlang Generator! ===') : console.log();
-    firstStart = false;
+
+const menuStart = () => {
+   if (firstStart) {
+        console.log('=== Welcome to Lucia\'s Conlang Generator! ===');
+        firstStart = false;
+    } else {
+        console.log();
+    }
+    
 
     try {
         const INPUT = Prompt('> ').toLowerCase();
 
-        if ((INPUT.trim().split(/\s+/)[0]) === 'gen' && INPUT.length > 3) {
-            fastGen(INPUT.trim().split(/\s+/));
+        const SPLIT_INPUT = INPUT.trim().split(/\s+/)
 
+        // Splits the input on each space, and passes it into the fast generation.
+        if (SPLIT_INPUT[0] === 'gen') {
+            INPUT.length === 3 ? promptUser() : fastGen(SPLIT_INPUT);
+            menuStart();
+        } else if (SPLIT_INPUT[0] === 'info') {
+            if (INPUT.length <= 5) throw Error('Error: Please give a language!');
+
+            const lang = FAMILY_TYPES.find((element) => { return element.name.toLowerCase() === SPLIT_INPUT[1]});
+
+            if (lang == undefined) throw Error('Error: Please enter a valid language!');
+            console.log(`Wikipedia Link: ${lang.info}`); 
             menuStart();
         }
 
         switch (INPUT) {
-            case 'gen':
-                promptUser();
+            case 'help':
+                giveHelp();
                 break;
+
+            case 'exit':
+                process.exit();
 
             default:
                 throw Error('Error: Unknown command!');
-                break;
         }
 
         menuStart();
@@ -249,13 +304,13 @@ const argv = require('yargs')
             process.exit();
         }
 
-        // Initializes an array for fast generation, and if any flags are set then push to the array, then generate.
-        let fArr = [];
-        if (argv.f) { fArr.push('-f') }
-        if (argv.s) { fArr.push('-s') }
-        if (argv.w) { fArr.push('-w') }
-        if (argv.i) { fArr.push('-i') }
-        fastGen(fArr);
+        // Generates the language from user input.
+        let famNum: number;
+        
+        if (argv.f) famNum = 1;
+        if (argv.s) famNum = 2;
+        printLang(generateLanguage(argv.i, argv.w, famNum));
+
         process.exit();
     })
     .help()
