@@ -5,7 +5,7 @@ const Prompt = require('prompt-sync')({sigint: true});
 const INFORMATION_LINK = 'https://en.wikipedia.org/wiki/';
 
 
-// Whenever the program is first opened.
+// Marks whether or not to show the title.
 let firstStart = true;
 
 
@@ -156,27 +156,29 @@ const generateLanguage = (inflect: boolean, writing: boolean, family: number) =>
         fType = lFamily.name;
     }
 
-    if (family === 2) sfType = lFamily.randomSubfamily();
+    if (family == 2) sfType = lFamily.randomSubfamily();
 
     return new Language(iType, wType, fType, sfType);
 }
 
 
+// Returns true if input starts with "y", false if anything else.
 const userInput = (message: string): boolean => {
     return (Prompt(message)[0].toLowerCase() === 'y');
 }
 
 
+// Prints out the info of the language.
 const printLang = lang => {
     // Ensuring a valid response prior to showing the language.
-    if (typeof lang === 'object') {
-        console.log('Language generated!');
+    if (typeof lang != 'object') return;
 
-        if (lang.inflection) console.log(`  Inflection style: ${lang.inflection}`);
-        if (lang.writing) console.log(`  Orthography: ${lang.writing}`);
-        if (lang.family) console.log(`  Language family: ${lang.family}`);
-        if (lang.subfamily) console.log(`    Language subfamily: ${lang.subfamily}`);
-    }
+    console.log('Language generated!');
+
+    if (lang.inflection) console.log(`  Inflection style: ${lang.inflection}`);
+    if (lang.writing) console.log(`  Orthography: ${lang.writing}`);
+    if (lang.family) console.log(`  Language family: ${lang.family}`);
+    if (lang.subfamily) console.log(`    Language subfamily: ${lang.subfamily}`);
 }
 
 
@@ -192,6 +194,7 @@ const promptUser = () => {
 
         printLang(generateLanguage(INPUT_INFLECTION, INPUT_WRITING, INPUT_FAMILY + inputSubfamily));
     } catch (err) {
+        console.error('Error: Unknown command!');
         return;
     }
 }
@@ -203,7 +206,7 @@ const fastGen = input => {
     let family = 0;
 
     for (const flag of input) {
-        if (flag === 'gen') continue;
+        if (flag == 'gen') continue;
 
         switch (flag) {
             case '-i':
@@ -255,13 +258,13 @@ const menuStart = () => {
         const SPLIT_INPUT = INPUT.trim().split(/\s+/)
 
         // Splits the input on each space, and passes it into the fast generation.
-        if (SPLIT_INPUT[0] === 'gen') {
-            INPUT.length === 3 ? promptUser() : fastGen(SPLIT_INPUT);
+        if (SPLIT_INPUT[0] == 'gen') {
+            INPUT.length == 3 ? promptUser() : fastGen(SPLIT_INPUT);
             menuStart();
-        } else if (SPLIT_INPUT[0] === 'info') {
+        } else if (SPLIT_INPUT[0] == 'info') {
             if (INPUT.length <= 5) throw Error('Error: Please give a language!');
 
-            const lang = FAMILY_TYPES.find((element) => { return element.name.toLowerCase() === SPLIT_INPUT[1]});
+            const lang = FAMILY_TYPES.find((element) => { return element.name.toLowerCase() == SPLIT_INPUT[1]});
 
             if (lang == undefined) throw Error('Error: Please enter a valid language!');
             console.log(`Wikipedia Link: ${lang.info}`); 
@@ -301,15 +304,14 @@ const argv = require('yargs')
         // If no flags are set, go through the prompts.
         if (!argv.f && !argv.s && !argv.w && !argv.i) {
             promptUser();
-            process.exit();
+        } else {
+            // Generates the language from user input.
+            let famNum: number;
+            
+            if (argv.f) famNum = 1;
+            if (argv.s) famNum = 2;
+            printLang(generateLanguage(argv.i, argv.w, famNum));
         }
-
-        // Generates the language from user input.
-        let famNum: number;
-        
-        if (argv.f) famNum = 1;
-        if (argv.s) famNum = 2;
-        printLang(generateLanguage(argv.i, argv.w, famNum));
 
         process.exit();
     })
@@ -317,4 +319,5 @@ const argv = require('yargs')
     .argv
 
 
+// Starting the program.
 menuStart();
