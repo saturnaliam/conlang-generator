@@ -275,7 +275,7 @@ const menuStart = () => {
 
         // Splits the input on each space, and passes it into the fast generation.
         if (INPUT[0] == 'gen') {
-            INPUT[1] === undefined ? promptUser() : fastGen(SPLIT_INPUT);
+            INPUT[1] === undefined ? promptUser() : fastGen(INPUT);
             menuStart();
         } else if (INPUT[0] == 'info') {
             if (INPUT[1] === undefined) throw Error('Error: Please give a language!');
