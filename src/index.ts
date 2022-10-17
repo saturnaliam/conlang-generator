@@ -9,6 +9,31 @@ const INFORMATION_LINK = 'https://en.wikipedia.org/wiki/';
 let firstStart = true;
 
 
+class CLI {
+    _command: string;
+    _alias: string;
+    _description: string;
+
+    constructor(command: string, alias: string, description: string) {
+        this._command = command;
+        this._alias = alias;
+        this._description = description;
+    }
+    
+    get command() {
+        return this._command;
+    }
+    
+    get alias() {
+        return this._alias;
+    }
+    
+    get description() {
+        return this._description;
+    }
+}
+
+
 class Family {
     _name: string;
     _info: string;
@@ -119,11 +144,7 @@ const FAMILY_TYPES = [NIGER_CONGO, AUSTRONESIAN, TRANS_NEW_GUINEA, SINO_TIBETAN,
 
 
 // Commands for the REPL
-const GEN = new Command('gen [flags]', 'Generates a new language.', [new Command('-i', 'Generates inflection.'), new Command('-w', 'Generates orthography.'), new Command('-f', 'Generates a family.'), new Command('-s', 'Generates a subfamily.')]);
-const HELP = new Command('help', 'Gives list of each command.');
-const INFO = new Command('info <language>', 'Gives a Wikipedia link for the language given.\n  - Sino-Tibetan, Indo-European, Australian, Afro-Asiatic, Nilo-Saharan, Tai-Kadai, Dravidian, Tupian');
-const EXIT = new Command('exit', 'Exits the application.');
-const commands = [GEN, HELP, INFO, EXIT];
+const COMMANDS = [new Command('gen [flags]', 'Generates a new language.', [new Command('-i', 'Generates inflection.'), new Command('-w', 'Generates orthography.'), new Command('-f', 'Generates a family.'), new Command('-s', 'Generates a subfamily.')]), new Command('help', 'Gives list of each command.'), new Command('info <language>', 'Gives a Wikipedia link for the language given.\n  - Sino-Tibetan, Indo-European, Australian, Afro-Asiatic, Nilo-Saharan, Tai-Kadai, Dravidian, Tupian'), new Command('exit', 'Exits the application.')];
 
 // Generating the language.
 const generateLanguage = (inflect: boolean, writing: boolean, family: number) => {
@@ -163,9 +184,7 @@ const generateLanguage = (inflect: boolean, writing: boolean, family: number) =>
 
 
 // Returns true if input starts with "y", false if anything else.
-const userInput = (message: string): boolean => {
-    return (Prompt(message)[0].toLowerCase() === 'y');
-}
+const userInput = (message: string): boolean => (Prompt(message)[0].toLowerCase() === 'y')
 
 
 // Prints out the info of the language.
@@ -194,7 +213,6 @@ const promptUser = () => {
 
         printLang(generateLanguage(INPUT_INFLECTION, INPUT_WRITING, INPUT_FAMILY + inputSubfamily));
     } catch (err) {
-        console.error('Error: Unknown command!');
         return;
     }
 }
@@ -231,7 +249,7 @@ const fastGen = input => {
 
 
 const giveHelp = () => {
-    for(const command of commands) {
+    for(const command of COMMANDS) {
         console.log(`\n${command.name}\n  - ${command.description}`);
         
         if (!command.flags) continue;
@@ -253,25 +271,23 @@ const menuStart = () => {
     
 
     try {
-        const INPUT = Prompt('> ').toLowerCase();
-
-        const SPLIT_INPUT = INPUT.trim().split(/\s+/)
+        const INPUT = Prompt('> ').toLowerCase().trim().split(/\s+/);
 
         // Splits the input on each space, and passes it into the fast generation.
-        if (SPLIT_INPUT[0] == 'gen') {
-            INPUT.length == 3 ? promptUser() : fastGen(SPLIT_INPUT);
+        if (INPUT[0] == 'gen') {
+            INPUT[1] === undefined ? promptUser() : fastGen(SPLIT_INPUT);
             menuStart();
-        } else if (SPLIT_INPUT[0] == 'info') {
-            if (INPUT.length <= 5) throw Error('Error: Please give a language!');
+        } else if (INPUT[0] == 'info') {
+            if (INPUT[1] === undefined) throw Error('Error: Please give a language!');
 
-            const lang = FAMILY_TYPES.find((element) => { return element.name.toLowerCase() == SPLIT_INPUT[1]});
+            const lang = FAMILY_TYPES.find((element) => { return element.name.toLowerCase() == INPUT[1]});
 
             if (lang == undefined) throw Error('Error: Please enter a valid language!');
             console.log(`Wikipedia Link: ${lang.info}`); 
             menuStart();
         }
 
-        switch (INPUT) {
+        switch (INPUT[0]) {
             case 'help':
                 giveHelp();
                 break;
@@ -291,15 +307,18 @@ const menuStart = () => {
 }
 
 
+// CLI commands
+const CLI_COMMANDS = [new CLI('i', 'inflection', 'Generates a type of inflectional morphology.'), new CLI('w', 'writing', 'Generates a type of writing system.'), new CLI('f', 'family', 'Generates a major family.'), new CLI('s', 'subfamily', 'Generates a subfamily.')];
+
+
 // Direct commands
 const argv = require('yargs')
     .usage('$0 <command> [options]')
     .command('gen [flags]', 'Generates a language.', function (yargs) {
-        // All the flags you can use for fast generation
-        yargs.options('i', { 'alias': 'inflection', 'description': 'Generates a type of inflectional morphology.' })
-        yargs.option('w', { 'alias': 'writing', 'description': 'Generates a writing system.' })
-        yargs.option('f', { 'alias': 'family', 'description': 'Generates a major family.' })
-        yargs.option('s', { 'alias': 'subfamily', 'description': 'Generates a subfamily.' })
+        // All the flags you can use for fast generation.
+        for(const cli of CLI_COMMANDS) {
+            yargs.options(cli.command, { 'alias': cli.alias, 'description': cli.description });
+        }
     }, function (argv) {
         // If no flags are set, go through the prompts.
         if (!argv.f && !argv.s && !argv.w && !argv.i) {
