@@ -1,6 +1,6 @@
 # Conlang Generator
 
-A console based constructed language generator, to give you a basic skeleton to build off of!
+A tool to help you come up with ideas for [conlangs](https://en.wikipedia.org/wiki/Constructed_language). This program has a few commands, which allow you to generate a type of inflectional morphology, orthography, along with language families.
 
 ## Setup
 
@@ -14,6 +14,10 @@ npm run init
 ### Using REPL
 ```
 npm start
+```
+or
+```
+node build/index
 ```
 
 ### Using Direct Commands
