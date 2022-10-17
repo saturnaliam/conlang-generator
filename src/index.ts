@@ -317,7 +317,7 @@ const argv = require('yargs')
     .command('gen [flags]', 'Generates a language.', function (yargs) {
         // All the flags you can use for fast generation.
         for(const cli of CLI_COMMANDS) {
-            yargs.options(cli.name, { 'alias': cli.alias, 'description': cli.description);
+            yargs.options(cli.command, { 'alias': cli.alias, 'description': cli.description });
         }
     }, function (argv) {
         // If no flags are set, go through the prompts.
