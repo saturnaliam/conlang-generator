@@ -119,11 +119,7 @@ const FAMILY_TYPES = [NIGER_CONGO, AUSTRONESIAN, TRANS_NEW_GUINEA, SINO_TIBETAN,
 
 
 // Commands for the REPL
-const GEN = new Command('gen [flags]', 'Generates a new language.', [new Command('-i', 'Generates inflection.'), new Command('-w', 'Generates orthography.'), new Command('-f', 'Generates a family.'), new Command('-s', 'Generates a subfamily.')]);
-const HELP = new Command('help', 'Gives list of each command.');
-const INFO = new Command('info <language>', 'Gives a Wikipedia link for the language given.\n  - Sino-Tibetan, Indo-European, Australian, Afro-Asiatic, Nilo-Saharan, Tai-Kadai, Dravidian, Tupian');
-const EXIT = new Command('exit', 'Exits the application.');
-const commands = [GEN, HELP, INFO, EXIT];
+const COMMANDS = [new Command('gen [flags]', 'Generates a new language.', [new Command('-i', 'Generates inflection.'), new Command('-w', 'Generates orthography.'), new Command('-f', 'Generates a family.'), new Command('-s', 'Generates a subfamily.')]), new Command('help', 'Gives list of each command.'), new Command('info <language>', 'Gives a Wikipedia link for the language given.\n  - Sino-Tibetan, Indo-European, Australian, Afro-Asiatic, Nilo-Saharan, Tai-Kadai, Dravidian, Tupian'), new Command('exit', 'Exits the application.')];
 
 // Generating the language.
 const generateLanguage = (inflect: boolean, writing: boolean, family: number) => {
@@ -163,9 +159,7 @@ const generateLanguage = (inflect: boolean, writing: boolean, family: number) =>
 
 
 // Returns true if input starts with "y", false if anything else.
-const userInput = (message: string): boolean => {
-    return (Prompt(message)[0].toLowerCase() === 'y');
-}
+const userInput = (message: string): boolean => (Prompt(message)[0].toLowerCase() === 'y')
 
 
 // Prints out the info of the language.
@@ -231,7 +225,7 @@ const fastGen = input => {
 
 
 const giveHelp = () => {
-    for(const command of commands) {
+    for(const command of COMMANDS) {
         console.log(`\n${command.name}\n  - ${command.description}`);
         
         if (!command.flags) continue;
