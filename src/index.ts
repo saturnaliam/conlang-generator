@@ -190,12 +190,14 @@ const printLang = lang => {
     // Ensuring a valid response prior to showing the language.
     if (typeof lang != 'object') return;
 
-    console.log('Language generated!');
+    let languageMessage = 'Language generated!';
 
-    if (lang.inflection) console.log(`  Inflection style: ${lang.inflection}`);
-    if (lang.writing) console.log(`  Orthography: ${lang.writing}`);
-    if (lang.family) console.log(`  Language family: ${lang.family}`);
-    if (lang.subfamily) console.log(`    Language subfamily: ${lang.subfamily}`);
+    if (lang.inflection) languageMessage += `\n  Inflection style: ${lang.inflection}`; //console.log(`  Inflection style: ${lang.inflection}`);
+    if (lang.writing) languageMessage += `\n  Writing style: ${lang.writing}`;
+    if (lang.family) languageMessage += `\n  Language family: ${lang.family}`;
+    if (lang.subfamily) languageMessage += `\n    Subfamily: ${lang.subfamily}`;
+    
+    console.log(languageMessage);
 }
 
 
