@@ -150,13 +150,11 @@ const COMMANDS = [new Command('gen [flags]', 'Generates a new language.', [new C
 const generateLanguage = (inflect: boolean, writing: boolean, family: number) => {
     // Gives an error if the family value is invalid, or if no language would be generated.
     if (family < 0 || family > 2) {
-        console.error('Error: The language family must be a number between 0 and 2. Please refer to the README for more information.');
-        return 0;
+        throw Error('Error: The language family must be a number between 0 and 2. Please refer to the README for more information.');
     }
 
     if (family === 0 && !inflect && !writing) {
-        console.error('Error: All options are false, no language generated.');
-        return 0;
+        throw Error('Error: All options are false, no language generated.');
     }   
 
     let lFamily: Family;
