@@ -1,6 +1,6 @@
 # Conlang Generator
 
-A tool to help you come up with ideas for [conlangs](https://en.wikipedia.org/wiki/Constructed_language). This program has a few commands, which allow you to generate a type of inflectional morphology, orthography, along with language families.
+A tool to help you come up with ideas for [conlangs](https://en.wikipedia.org/wiki/Constructed_language). This program has a REPL and CLI to allow you to generate a type of language family & subfamily, inflectional morphology, and writing system.
 
 ## Setup
 
@@ -23,6 +23,18 @@ node build/index
 ### Using Direct Commands
 ```
 node build/index <command>
+```
+
+### Building After Changes
+
+PowerShell:
+```
+npm run build
+```
+
+Everywhere else:
+```
+npm run build:shell
 ```
 
 ### Commands
