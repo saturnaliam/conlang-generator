@@ -150,11 +150,11 @@ const COMMANDS = [new Command('gen [flags]', 'Generates a new language.', [new C
 const generateLanguage = (inflect: boolean, writing: boolean, family: number) => {
     // Gives an error if the family value is invalid, or if no language would be generated.
     if (family < 0 || family > 2) {
-        throw Error('Error: The language family must be a number between 0 and 2. Please refer to the README for more information.');
+        throw Error('Error: Invalid language family!');
     }
 
     if (family === 0 && !inflect && !writing) {
-        throw Error('Error: All options are false, no language generated.');
+        throw Error('Error: All options are false, no language generated!');
     }   
 
     let lFamily: Family;
@@ -186,13 +186,10 @@ const userInput = (message: string): boolean => (Prompt(message)[0].toLowerCase(
 
 
 // Prints out the info of the language.
-const printLang = lang => {
-    // Ensuring a valid response prior to showing the language.
-    if (typeof lang != 'object') return;
-
+const printLang = (lang: Language) => {
     let languageMessage = 'Language generated!';
 
-    if (lang.inflection) languageMessage += `\n  Inflection style: ${lang.inflection}`; //console.log(`  Inflection style: ${lang.inflection}`);
+    if (lang.inflection) languageMessage += `\n  Inflection style: ${lang.inflection}`;
     if (lang.writing) languageMessage += `\n  Writing style: ${lang.writing}`;
     if (lang.family) languageMessage += `\n  Language family: ${lang.family}`;
     if (lang.subfamily) languageMessage += `\n    Subfamily: ${lang.subfamily}`;
@@ -218,7 +215,7 @@ const promptUser = () => {
 }
 
 
-const fastGen = input => {
+const fastGen = (input: string[]) => {
     let inflect = false;
     let write = false;
     let family = 0;
