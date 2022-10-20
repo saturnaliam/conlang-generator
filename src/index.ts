@@ -1,6 +1,8 @@
 // Importing prompt-sync for user input.
 const Prompt = require('prompt-sync')({sigint: true});
 
+import { save, load} from '../build/save-load.js'
+
 // Wikipedia link
 const INFORMATION_LINK = 'https://en.wikipedia.org/wiki/';
 
