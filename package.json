@@ -6,8 +6,8 @@
   "homepage": "https://github.com/saturnaliam/conlang-generator",
   "scripts": {
     "start": "node build/index.js",
-    "build": "tsc & node buid/index.js",
-    "build:shell": "tsc && node build/index.js",
+    "build": "tsc && node buid/index.js",
+    "build:shell": "tsc & node build/index.js",
     "init": "npm i prompt-sync yargs @types/node"
   },
   "author": "Lucia",
