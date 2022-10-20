@@ -1,12 +1,13 @@
 // Importing prompt-sync for user input.
 const Prompt = require('prompt-sync')({sigint: true});
 
+
 // Wikipedia link
 const INFORMATION_LINK = 'https://en.wikipedia.org/wiki/';
 
 
 // Marks whether or not to show the title.
-let firstStart = true;
+let opened = false;
 
 
 class CLI {
@@ -146,38 +147,49 @@ const FAMILY_TYPES = [NIGER_CONGO, AUSTRONESIAN, TRANS_NEW_GUINEA, SINO_TIBETAN,
 // Commands for the REPL
 const COMMANDS = [new Command('gen [flags]', 'Generates a new language.', [new Command('-i', 'Generates inflection.'), new Command('-w', 'Generates orthography.'), new Command('-f', 'Generates a family.'), new Command('-s', 'Generates a subfamily.')]), new Command('help', 'Gives list of each command.'), new Command('info <language>', 'Gives a Wikipedia link for the language given.\n  - Sino-Tibetan, Indo-European, Australian, Afro-Asiatic, Nilo-Saharan, Tai-Kadai, Dravidian, Tupian'), new Command('exit', 'Exits the application.')];
 
+
+// Error handling
+// TODO Add colors to error handling.
+const handleErrors = (error = "Error! Please try again.") => {
+    console.error(error);
+}
+
 // Generating the language.
 const generateLanguage = (inflect: boolean, writing: boolean, family: number) => {
-    // Gives an error if the family value is invalid, or if no language would be generated.
-    if (family < 0 || family > 2) {
-        throw Error('Error: Invalid language family!');
+    try {
+        // Gives an error if the family value is invalid, or if no language would be generated.
+        if (family < 0 || family > 2) {
+            throw Error('Error: Invalid language family!');
+        }
+
+        if (family === 0 && !inflect && !writing) {
+            throw Error('Error: All options are false, no language generated!');
+        }   
+
+        let lFamily: Family;
+
+        // Initializing each variable with 'none' to work with getters in the Family class.
+        let iType = 'none';
+        let wType = 'none';
+        let fType = 'none';
+        let sfType = 'none';
+
+        // Setting variables for the Family class based off user input.
+        if (inflect) iType = INFLECTION_TYPES[Math.floor(Math.random() * INFLECTION_TYPES.length)];
+
+        if (writing) wType = ORTHOGRAPHY_TYPES[Math.floor(Math.random() * ORTHOGRAPHY_TYPES.length)];
+
+        if (family >= 1) { 
+            lFamily = FAMILY_TYPES[Math.floor(Math.random() * FAMILY_TYPES.length)]; 
+            fType = lFamily.name;
+        }
+
+        if (family == 2) sfType = lFamily.randomSubfamily();
+
+        return new Language(iType, wType, fType, sfType);
+    } catch (err) {
+        handleErrors(err.message);
     }
-
-    if (family === 0 && !inflect && !writing) {
-        throw Error('Error: All options are false, no language generated!');
-    }   
-
-    let lFamily: Family;
-
-    // Initializing each variable with 'none' to work with getters in the Family class.
-    let iType = 'none';
-    let wType = 'none';
-    let fType = 'none';
-    let sfType = 'none';
-
-    // Setting variables for the Family class based off user input.
-    if (inflect) iType = INFLECTION_TYPES[Math.floor(Math.random() * INFLECTION_TYPES.length)];
-
-    if (writing) wType = ORTHOGRAPHY_TYPES[Math.floor(Math.random() * ORTHOGRAPHY_TYPES.length)];
-
-    if (family >= 1) { 
-        lFamily = FAMILY_TYPES[Math.floor(Math.random() * FAMILY_TYPES.length)]; 
-        fType = lFamily.name;
-    }
-
-    if (family == 2) sfType = lFamily.randomSubfamily();
-
-    return new Language(iType, wType, fType, sfType);
 }
 
 
@@ -198,7 +210,7 @@ const printLang = (lang: Language) => {
 }
 
 
-const promptUser = () => {
+const standardGen = () => {
     try {
         // Gets user input.
         let inputSubfamily = 0;
@@ -259,9 +271,9 @@ const giveHelp = () => {
 
 
 const menuStart = () => {
-   if (firstStart) {
+   if (!opened) {
         console.log('=== Welcome to Lucia\'s Conlang Generator! ===');
-        firstStart = false;
+        opened = false;
     } else {
         console.log();
     }
@@ -270,9 +282,9 @@ const menuStart = () => {
     try {
         const INPUT = Prompt('> ').toLowerCase().trim().split(/\s+/);
 
-        // Splits the input on each space, and passes it into the fast generation.
+        // Splits the input on each space, and passes it into the fast generation or the standard generation.
         if (INPUT[0] == 'gen') {
-            INPUT[1] === undefined ? promptUser() : fastGen(INPUT);
+            INPUT[1] === undefined ? standardGen() : fastGen(INPUT);
             menuStart();
         } else if (INPUT[0] == 'info') {
             if (INPUT[1] === undefined) throw Error('Error: Please give a language!');
@@ -298,7 +310,7 @@ const menuStart = () => {
 
         menuStart();
     } catch (err) {
-        console.error(err.message);
+        handleErrors(err.message);
         menuStart();
     }
 }
@@ -319,7 +331,7 @@ const argv = require('yargs')
     }, function (argv) {
         // If no flags are set, go through the prompts.
         if (!argv.f && !argv.s && !argv.w && !argv.i) {
-            promptUser();
+            standardGen();
         } else {
             // Generates the language from user input.
             let famNum: number;
