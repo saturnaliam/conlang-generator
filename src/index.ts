@@ -123,7 +123,7 @@ const FAMILY_TYPES = [NIGER_CONGO, AUSTRONESIAN, TRANS_NEW_GUINEA, SINO_TIBETAN,
 
 
 // Commands for the REPL
-const REPL_COMMANDS = [new Command('gen [flags]', 'Generates a new language.', [new Command('-i', 'Generates inflection.'), new Command('-w', 'Generates orthography.'), new Command('-f', 'Generates a family.'), new Command('-s', 'Generates a subfamily.')]), new Command('help', 'Gives list of each command.'), new Command('info <language>', 'Gives a Wikipedia link for the language given.\n  - Sino-Tibetan, Indo-European, Australian, Afro-Asiatic, Nilo-Saharan, Tai-Kadai, Dravidian, Tupian'), new Command('exit', 'Exits the application.')];
+const REPL_COMMANDS = [new Command('gen [flags]', 'Generates a new language.', [new Command('-i', 'Generates inflection.'), new Command('-w', 'Generates orthography.'), new Command('-f', 'Generates a family.'), new Command('-s', 'Generates a subfamily.')]), new Command('help', 'Gives list of each command.'), new Command('info <language>', 'Gives a Wikipedia link for the language given.\n  - Sino-Tibetan, Indo-European, Australian, Afro-Asiatic, Nilo-Saharan, Kra-Dai, Dravidian, Tupian'), new Command('exit', 'Exits the application.')];
 
 
 // Error handling
@@ -256,7 +256,7 @@ const giveHelp = () => {
 const menuStart = () => {
    if (!opened) {
         console.log('=== Welcome to Lucia\'s Conlang Generator! ===');
-        opened = false;
+        opened = true;
     } else {
         console.log();
     }
