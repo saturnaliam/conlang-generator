@@ -1,58 +1,48 @@
 // Importing prompt-sync for user input.
 const Prompt = require('prompt-sync')({sigint: true});
 
-// Wikipedia link
+
+// Importing chalk (colors)
+import chalk from 'chalk';
+
+
+// Base Wikipedia link used in 
 const INFORMATION_LINK = 'https://en.wikipedia.org/wiki/';
 
 
-// Marks whether or not to show the title.
-let firstStart = true;
+// Marks whether or not to show the title so it only shows when first opened.
+let opened = false;
 
 
-class CLI {
-    _command: string;
-    _alias: string;
-    _description: string;
+// Class for direct commands.
+class DirectCommand {
+    flagName: string;
+    alias: string;
+    description: string;
 
-    constructor(command: string, alias: string, description: string) {
-        this._command = command;
-        this._alias = alias;
-        this._description = description;
-    }
-    
-    get command() {
-        return this._command;
-    }
-    
-    get alias() {
-        return this._alias;
-    }
-    
-    get description() {
-        return this._description;
+    constructor(Command: string, Alias: string, Description: string) {
+        this.flagName = Command;
+        this.alias = Alias;
+        this.description = Description;
     }
 }
 
 
 class Family {
-    _name: string;
+    name: string;
     _info: string;
     _subfamilies: string[];
     
 
-    constructor(name: string, info: string, subfamilies = ['none']) {
-        this._name = name;
-        this._info = info;
-        this._subfamilies = subfamilies;
+    constructor(Name: string, Info: string, Subfamilies = ['none']) {
+        this.name = Name;
+        this._info = Info;
+        this._subfamilies = Subfamilies;
     }
 
 
     get info() {
         return INFORMATION_LINK + this._info;
-    }
-
-    get name() {
-        return this._name;
     }
 
 
@@ -70,11 +60,11 @@ class Language {
     _subfamily: string;
 
 
-    constructor(inflection: string, writing: string, family: string, subfamily: string) {
-        this._inflection = inflection;
-        this._writing = writing
-        this._family = family
-        this._subfamily = subfamily 
+    constructor(Inflection: string, Writing: string, Family: string, Subfamily: string) {
+        this._inflection = Inflection;
+        this._writing = Writing
+        this._family = Family
+        this._subfamily = Subfamily 
     } 
 
 
@@ -98,27 +88,20 @@ class Language {
 
 
 class Command {
-    _name: string;
-    _description: string;
+    name: string;
+    description: string;
     _flags: Command[];
 
-    constructor(name: string, description: string, flags?: Command[]) {
-        this._name = name;
-        this._description = description;
-        this._flags = flags;
+
+    constructor(Name: string, Description: string, Flags?: Command[]) {
+        this.name = Name;
+        this.description = Description;
+        this._flags = Flags;
     }
 
 
     get flags() {
         return (!this._flags ? false : this._flags)
-    }
-
-    get name() {
-        return this._name;
-    }
-
-    get description() {
-        return this._description;
     }
 }
 
@@ -132,7 +115,7 @@ const AUSTRALIAN = new Family('Australian', 'Australian_Aboriginal_languages');
 const AFRO_ASIATIC = new Family('Afro-Asiatic', 'Afroasiatic_languages', ['Berber', 'Chadic', 'Cushitic', 'Egyptian', 'Semitic', 'Omotic']);
 const NILO_SAHARAN = new Family('Nilo-Saharan', 'Nilo-Saharan_languages', ['Berta', 'B\'aga', 'Fur', 'Kadu', 'Koman', 'Kuliak', 'Kunama', 'Maban', 'Saharan', 'Songhay', 'Central Sudanic', 'Eastern Sudanic', 'Mimi-D']);
 const OTO_MANGUEAN = new Family('Oto-Manguean', 'Oto-Manguean_languages', ['Oto-Pamean', 'Chinantecan', 'Tlapanecan', 'Manguean', 'Popolocan', 'Zapotecan', 'Amuzgo', 'Mixtecan']);
-const TAI_KADAI = new Family('Tai-Kadai', 'Kra–Dai_languages', ['Kra', 'Kam-Sui', 'Lakkia', 'Biao', 'Be', 'Tai', 'Hiai']);
+const KRA_DAI = new Family('Kra-Dai', 'Kra–Dai_languages', ['Kra', 'Kam-Sui', 'Lakkia', 'Biao', 'Be', 'Tai', 'Hiai']);
 const DRAVIDIAN = new Family('Dravidian', 'Dravidian_languages', ['Northern', 'Central', 'South-Central', 'Central']);
 const TUPIAN = new Family('Tupian', 'Tupian_languages', ['Tupi-Guarani', 'Arikem', 'Aweti', 'Mawé', 'Monde', 'Mundurukú', 'Puruborá-Ramarama', 'Tuparí', 'Yuruna']);
 
@@ -140,44 +123,57 @@ const TUPIAN = new Family('Tupian', 'Tupian_languages', ['Tupi-Guarani', 'Arikem
 // Creating arrays for each of the options.
 const INFLECTION_TYPES = ['Oligosynthetic', 'Polysynthetic', 'Fusional', 'Agglutinative', 'Analytical'];
 const ORTHOGRAPHY_TYPES = ['Abugida', 'Abjad', 'Alphabet', 'Logosyllabary', 'Syllabary', 'Featural System'];
-const FAMILY_TYPES = [NIGER_CONGO, AUSTRONESIAN, TRANS_NEW_GUINEA, SINO_TIBETAN, INDO_EUROPEAN, AUSTRALIAN, AFRO_ASIATIC, NILO_SAHARAN, OTO_MANGUEAN, TAI_KADAI, DRAVIDIAN, TUPIAN];
+const FAMILY_TYPES = [NIGER_CONGO, AUSTRONESIAN, TRANS_NEW_GUINEA, SINO_TIBETAN, INDO_EUROPEAN, AUSTRALIAN, AFRO_ASIATIC, NILO_SAHARAN, OTO_MANGUEAN, KRA_DAI, DRAVIDIAN, TUPIAN];
 
 
 // Commands for the REPL
-const COMMANDS = [new Command('gen [flags]', 'Generates a new language.', [new Command('-i', 'Generates inflection.'), new Command('-w', 'Generates orthography.'), new Command('-f', 'Generates a family.'), new Command('-s', 'Generates a subfamily.')]), new Command('help', 'Gives list of each command.'), new Command('info <language>', 'Gives a Wikipedia link for the language given.\n  - Sino-Tibetan, Indo-European, Australian, Afro-Asiatic, Nilo-Saharan, Tai-Kadai, Dravidian, Tupian'), new Command('exit', 'Exits the application.')];
+const REPL_COMMANDS = [new Command('gen [flags]', 'Generates a new language.', [new Command('-i', 'Generates inflection.'), new Command('-w', 'Generates orthography.'), new Command('-f', 'Generates a family.'), new Command('-s', 'Generates a subfamily.')]), new Command('help', 'Gives list of each command.'), new Command('info <language>', 'Gives a Wikipedia link for the language given.\n  - Sino-Tibetan, Indo-European, Australian, Afro-Asiatic, Nilo-Saharan, Kra-Dai, Dravidian, Tupian'), new Command('exit', 'Exits the application.')];
 
-// Generating the language.
+
+// Error handling
+const handleErrors = (error = "Error! Please try again.") => {
+    console.error(chalk.bgRed(error));
+}
+
+
+// Code for generating the language.
 const generateLanguage = (inflect: boolean, writing: boolean, family: number) => {
-    // Gives an error if the family value is invalid, or if no language would be generated.
-    if (family < 0 || family > 2) {
-        throw Error('Error: Invalid language family!');
+    try {
+        // Gives an error if the family value is invalid, or if no language would be generated.
+        if (family < 0 || family > 2) {
+            throw Error('Error: Invalid language family!');
+        }
+
+        if (family === 0 && !inflect && !writing) {
+            throw Error('Error: All options are false, no language generated!');
+        }   
+
+
+        // Variable to be used for the language family, used to determine subfamilies from the family.
+        let languageFamily: Family;
+
+        // Initializing each variable with 'none' to work with getters in the Family class.
+        let inflectionType = 'none';
+        let writingType = 'none';
+        let familyType = 'none';
+        let subfamilyType = 'none';
+
+        // Setting variables for the Family class based off user input.
+        if (inflect) inflectionType = INFLECTION_TYPES[Math.floor(Math.random() * INFLECTION_TYPES.length)];
+
+        if (writing) writingType = ORTHOGRAPHY_TYPES[Math.floor(Math.random() * ORTHOGRAPHY_TYPES.length)];
+
+        if (family >= 1) { 
+            languageFamily = FAMILY_TYPES[Math.floor(Math.random() * FAMILY_TYPES.length)]; 
+            familyType = languageFamily.name;
+        }
+
+        if (family == 2) subfamilyType = languageFamily.randomSubfamily();
+
+        printLang(new Language(inflectionType, writingType, familyType, subfamilyType))
+    } catch (err) {
+        handleErrors(err.message);
     }
-
-    if (family === 0 && !inflect && !writing) {
-        throw Error('Error: All options are false, no language generated!');
-    }   
-
-    let lFamily: Family;
-
-    // Initializing each variable with 'none' to work with getters in the Family class.
-    let iType = 'none';
-    let wType = 'none';
-    let fType = 'none';
-    let sfType = 'none';
-
-    // Setting variables for the Family class based off user input.
-    if (inflect) iType = INFLECTION_TYPES[Math.floor(Math.random() * INFLECTION_TYPES.length)];
-
-    if (writing) wType = ORTHOGRAPHY_TYPES[Math.floor(Math.random() * ORTHOGRAPHY_TYPES.length)];
-
-    if (family >= 1) { 
-        lFamily = FAMILY_TYPES[Math.floor(Math.random() * FAMILY_TYPES.length)]; 
-        fType = lFamily.name;
-    }
-
-    if (family == 2) sfType = lFamily.randomSubfamily();
-
-    return new Language(iType, wType, fType, sfType);
 }
 
 
@@ -186,19 +182,19 @@ const userInput = (message: string): boolean => (Prompt(message)[0].toLowerCase(
 
 
 // Prints out the info of the language.
-const printLang = (lang: Language) => {
+const printLang = (language: Language) => {
     let languageMessage = 'Language generated!';
 
-    if (lang.inflection) languageMessage += `\n  Inflection style: ${lang.inflection}`;
-    if (lang.writing) languageMessage += `\n  Writing style: ${lang.writing}`;
-    if (lang.family) languageMessage += `\n  Language family: ${lang.family}`;
-    if (lang.subfamily) languageMessage += `\n    Subfamily: ${lang.subfamily}`;
+    if (language.inflection) languageMessage += `\n  Inflection style: ${language.inflection}`;
+    if (language.writing) languageMessage += `\n  Writing style: ${language.writing}`;
+    if (language.family) languageMessage += `\n  Language family: ${language.family}`;
+    if (language.subfamily) languageMessage += `\n    Subfamily: ${language.subfamily}`;
     
-    console.log(languageMessage);
+    console.log(chalk.green(languageMessage));
 }
 
 
-const promptUser = () => {
+const standardGen = () => {
     try {
         // Gets user input.
         let inputSubfamily = 0;
@@ -208,7 +204,7 @@ const promptUser = () => {
 
         if (INPUT_FAMILY) inputSubfamily = Number(userInput('Do you want to generate a language subfamily? [Y/N] '));
 
-        printLang(generateLanguage(INPUT_INFLECTION, INPUT_WRITING, INPUT_FAMILY + inputSubfamily));
+        generateLanguage(INPUT_INFLECTION, INPUT_WRITING, INPUT_FAMILY + inputSubfamily);
     } catch (err) {
         return;
     }
@@ -221,6 +217,7 @@ const fastGen = (input: string[]) => {
     let family = 0;
 
     for (const flag of input) {
+        // If the array item is "gen", skip over it.
         if (flag == 'gen') continue;
 
         switch (flag) {
@@ -241,12 +238,13 @@ const fastGen = (input: string[]) => {
         }                
     }
 
-    printLang(generateLanguage(inflect, write, family));
+    generateLanguage(inflect, write, family);
 }
 
 
 const giveHelp = () => {
-    for(const command of COMMANDS) {
+    // Prints out each command and any flags it can have.
+    for(const command of REPL_COMMANDS) {
         console.log(`\n${command.name}\n  - ${command.description}`);
         
         if (!command.flags) continue;
@@ -259,28 +257,33 @@ const giveHelp = () => {
 
 
 const menuStart = () => {
-   if (firstStart) {
+   if (!opened) {
         console.log('=== Welcome to Lucia\'s Conlang Generator! ===');
-        firstStart = false;
+        opened = true;
     } else {
         console.log();
     }
     
 
     try {
+        // Gets user input and splits it on every space.
         const INPUT = Prompt('> ').toLowerCase().trim().split(/\s+/);
 
-        // Splits the input on each space, and passes it into the fast generation.
+
+        // Checking if the input is gen, and performing either the standard or fast generation.
         if (INPUT[0] == 'gen') {
-            INPUT[1] === undefined ? promptUser() : fastGen(INPUT);
+            INPUT[1] === undefined ? standardGen() : fastGen(INPUT);
             menuStart();
         } else if (INPUT[0] == 'info') {
+            // Throws an error if the user gives no language.
             if (INPUT[1] === undefined) throw Error('Error: Please give a language!');
 
-            const lang = FAMILY_TYPES.find((element) => { return element.name.toLowerCase() == INPUT[1]});
 
-            if (lang == undefined) throw Error('Error: Please enter a valid language!');
-            console.log(`Wikipedia Link: ${lang.info}`); 
+            // Creates a language variable set to the language family given.
+            const LANG = FAMILY_TYPES.find((element) => { return element.name.toLowerCase() == INPUT[1]});
+
+            if (LANG == undefined) throw Error('Error: Please enter a valid language!');
+            console.log(`Wikipedia Link: ${LANG.info}`); 
             menuStart();
         }
 
@@ -298,35 +301,41 @@ const menuStart = () => {
 
         menuStart();
     } catch (err) {
-        console.error(err.message);
+        handleErrors(err.message);
         menuStart();
     }
 }
 
 
+// Everything past this point is used for direct commands.
+
+
 // CLI commands
-const CLI_COMMANDS = [new CLI('i', 'inflection', 'Generates a type of inflectional morphology.'), new CLI('w', 'writing', 'Generates a type of writing system.'), new CLI('f', 'family', 'Generates a major family.'), new CLI('s', 'subfamily', 'Generates a subfamily.')];
+const DIRECT_COMMANDS = [new DirectCommand('i', 'inflection', 'Generates a type of inflectional morphology.'), new DirectCommand('w', 'writing', 'Generates a type of writing system.'), new DirectCommand('f', 'family', 'Generates a major family.'), new DirectCommand('s', 'subfamily', 'Generates a subfamily.')];
 
 
 // Direct commands
 const argv = require('yargs')
+    // Gives the format for commands.
     .usage('$0 <command> [options]')
+
+    // Adds the generate command.
     .command('gen [flags]', 'Generates a language.', function (yargs) {
-        // All the flags you can use for fast generation.
-        for(const cli of CLI_COMMANDS) {
-            yargs.options(cli.command, { 'alias': cli.alias, 'description': cli.description });
+        // Adds all the flags you can use to the help command.
+        for(const direct of DIRECT_COMMANDS) {
+            yargs.options(direct.flagName, { 'alias': direct.alias, 'description': direct.description });
         }
     }, function (argv) {
         // If no flags are set, go through the prompts.
         if (!argv.f && !argv.s && !argv.w && !argv.i) {
-            promptUser();
+            standardGen();
         } else {
             // Generates the language from user input.
             let famNum: number;
             
             if (argv.f) famNum = 1;
             if (argv.s) famNum = 2;
-            printLang(generateLanguage(argv.i, argv.w, famNum));
+            generateLanguage(argv.i, argv.w, famNum);
         }
 
         process.exit();
