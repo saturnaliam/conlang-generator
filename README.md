@@ -27,27 +27,27 @@ node build/index <command>
 
 ### Building After Changes
 
-PowerShell:
+#### PowerShell:
 ```
 npm run build
 ```
 
-Everywhere else:
+#### Everywhere else:
 ```
 npm run build:shell
 ```
 
 ### Commands
-* ``gen [flags]``: Generates a new language. If no flags are given, the program will prompt the user with questions for generation.
-* ``info <language>``: Gives a Wikipedia link with information on a language family.
-* ``help``: Gives a list of commands.
-* ``exit``: Exits the program.
+* ``gen [flags]``- Generates a new language. If no flags are given, the program will prompt the user with questions for generation.
+* ``info <language>`` - Gives a Wikipedia link with information on a language family.
+* ``help`` - Gives a list of commands.
+* ``exit`` - Exits the program.
 
 ### Flags
-* ``-i``: Generates type of inflectional morphology.
-* ``-w``: Generates type of writing system.
-* ``-f``: Generates language family.
-* ``-s``: Generates language subfamily.
+* ``-i`` - Generates type of inflectional morphology.
+* ``-w`` - Generates type of writing system.
+* ``-f`` - Generates language family.
+* ``-s`` - Generates language subfamily.
 
 ## Examples
 * Generates a language with inflectional morphology and a writing system.
