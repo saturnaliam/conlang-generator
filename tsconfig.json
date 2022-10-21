@@ -1,9 +1,10 @@
 {
     "compilerOptions": {
         "target": "ES6",
+        "module": "CommonJS",
         "outDir": "build",
         "removeComments": true
     },
     
-    "files": ["src/index.ts"]
+    "files": ["src/index.ts", "src/save-load.ts"]
 }

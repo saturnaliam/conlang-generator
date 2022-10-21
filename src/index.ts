@@ -2,6 +2,14 @@
 const Prompt = require('prompt-sync')({sigint: true});
 
 
+// Importing saving and loading.
+import { read, save } from './save-load';
+
+
+// Creates a variable to store last made language.
+let currentLanguage: Language;
+
+
 // Base Wikipedia link used in 
 const INFORMATION_LINK = 'https://en.wikipedia.org/wiki/';
 
@@ -167,7 +175,8 @@ const generateLanguage = (inflect: boolean, writing: boolean, family: number) =>
 
         if (family == 2) subfamilyType = languageFamily.randomSubfamily();
 
-        printLang(new Language(inflectionType, writingType, familyType, subfamilyType))
+        currentLanguage = new Language(inflectionType, writingType, familyType, subfamilyType);
+        printLang(currentLanguage);
     } catch (err) {
         handleErrors(err.message);
     }
@@ -247,7 +256,7 @@ const giveHelp = () => {
         if (!command.flags) continue;
         console.log('  Flags:');
         for(const flag of command.flags) {
-            console.log('    ' + flag.name);
+            console.log('    ' + flag.name + ': ' + flag.description);
         }
     }
 }
@@ -265,26 +274,41 @@ const menuStart = () => {
     try {
         // Gets user input and splits it on every space.
         const INPUT = Prompt('> ').toLowerCase().trim().split(/\s+/);
-
-
-        // Checking if the input is gen, and performing either the standard or fast generation.
-        if (INPUT[0] == 'gen') {
-            INPUT[1] === undefined ? standardGen() : fastGen(INPUT);
-            menuStart();
-        } else if (INPUT[0] == 'info') {
-            // Throws an error if the user gives no language.
-            if (INPUT[1] === undefined) throw Error('Error: Please give a language!');
-
-
-            // Creates a language variable set to the language family given.
-            const LANG = FAMILY_TYPES.find((element) => { return element.name.toLowerCase() == INPUT[1]});
-
-            if (LANG == undefined) throw Error('Error: Please enter a valid language!');
-            console.log(`Wikipedia Link: ${LANG.info}`); 
-            menuStart();
-        }
-
+        
         switch (INPUT[0]) {
+            case 'gen':
+                INPUT[1] === undefined ? standardGen() : fastGen(INPUT);
+                break;
+
+            case 'info':
+                // Throws an error if the user gives no language.
+                if (INPUT[1] === undefined) throw Error('Error: Please give a language!');
+                
+                
+                // Creates a language variable set to the language family given.
+                const LANG = FAMILY_TYPES.find((element) => { return element.name.toLowerCase() == INPUT[1]});
+                
+                if (LANG == undefined) throw Error('Error: Please enter a valid language!');
+                console.log(`Wikipedia Link: ${LANG.info}`); 
+                break;
+
+            case 'save':
+                if (currentLanguage === undefined) throw Error('Error: Generate a language first!');
+
+                INPUT[1] === undefined ? save(currentLanguage) : save(currentLanguage, INPUT[1]);
+                console.log('Saved to file!');
+                break;
+                
+            case 'load':
+                let newLang: object;
+                if (INPUT[1] === undefined) {
+                    throw Error('Error: Please give a filename!');
+                } else {
+                    newLang = read(INPUT[1]);
+                    console.log(newLang);
+                }
+                break;
+
             case 'help':
                 giveHelp();
                 break;
